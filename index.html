@@ -1,233 +1,822 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Deep Dive Memory & Compiler Concepts Learning Prompt</title>
-    <meta name="description"
-        content="A comprehensive, terminal-styled learning prompt for mastering low-level programming, memory management, and compiler design concepts using any LLM.">
-    <!-- Twitter Card Meta Tags -->
-    <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="Deep Dive Memory & Compiler Concepts Learning Prompt">
-    <meta name="twitter:description"
-        content="A comprehensive, terminal-styled learning prompt for mastering low-level programming and compiler design.">
-    <meta name="twitter:image" content="https://lowlevellearning.vercel.app/fav.png">
-
-    <!-- Tailwind CSS CDN -->
-    <script src="https://cdn.tailwindcss.com"></script>
-
-    <!-- Google Fonts: JetBrains Mono for authentic terminal look -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
-    <link rel="icon" type="image/png" href="fav.png">
-
-
-    <style>
-        body {
-            font-family: 'JetBrains Mono', monospace;
-            background: #000000;
-            color: #ffffff;
-        }
-
-        .terminal-cursor::after {
-            content: '█';
-            animation: blink 1s infinite;
-            margin-left: 2px;
-        }
-
-        @keyframes blink {
-
-            0%,
-            50% {
-                opacity: 1;
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Universal Learning System - Master Any Topic</title>
+        <meta
+            name="description"
+            content="A comprehensive, terminal-styled universal learning system for mastering any topic using LLMs. Transform any subject into structured, engaging learning experiences."
+        />
+        <!-- Twitter Card Meta Tags -->
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta
+            name="twitter:title"
+            content="Universal Learning System - Master Any Topic"
+        />
+        <meta
+            name="twitter:description"
+            content="A comprehensive universal learning system that works for any subject - from quantum physics to cooking."
+        />
+        <meta
+            name="twitter:image"
+            content="https://lowlevellearning.vercel.app/fav.png"
+        />
+        <!-- Tailwind CSS CDN -->
+        <script src="https://cdn.tailwindcss.com"></script>
+        <!-- Google Fonts: JetBrains Mono for authentic terminal look -->
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        <link
+            href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&display=swap"
+            rel="stylesheet"
+        />
+        <link rel="icon" type="image/png" href="fav.png" />
+        <style>
+            body {
+                font-family: "JetBrains Mono", monospace;
+                background: #000000;
+                color: #ffffff;
             }
-
-            51%,
-            100% {
-                opacity: 0;
+            .terminal-cursor::after {
+                content: "█";
+                animation: blink 1s infinite;
+                margin-left: 2px;
             }
-        }
-
-        .copy-btn {
-            background: #ffffff;
-            color: #000000;
-            border: 2px solid #ffffff;
-            transition: all 0.2s ease;
-        }
-
-        .copy-btn:hover {
-            background: #000000;
-            color: #ffffff;
-            transform: translateY(-1px);
-        }
-
-        .copy-success {
-            animation: fadeInOut 2s ease-in-out;
-        }
-
-        @keyframes fadeInOut {
-
-            0%,
-            100% {
-                opacity: 0;
+            @keyframes blink {
+                0%,
+                50% {
+                    opacity: 1;
+                }
+                51%,
+                100% {
+                    opacity: 0;
+                }
             }
-
-            20%,
-            80% {
-                opacity: 1;
+            .copy-btn {
+                background: #ffffff;
+                color: #000000;
+                border: 2px solid #ffffff;
+                transition: all 0.2s ease;
             }
-        }
-
-        .prompt-line::before {
-            content: '$ ';
-            color: #ffffff;
-            font-weight: bold;
-        }
-
-        .terminal-border {
-            border: 1px solid #333333;
-            box-shadow: 0 0 20px rgba(255, 255, 255, 0.1);
-        }
-
-        .section-divider {
-            border-left: 2px solid #333333;
-        }
-
-        .highlight-text {
-            background: #ffffff;
-            color: #000000;
-            padding: 0 4px;
-        }
-
-        .ascii-art {
-            font-family: 'JetBrains Mono', monospace;
-            line-height: 1;
-            white-space: pre;
-        }
-
-        /* Custom scrollbar for terminal feel */
-        ::-webkit-scrollbar {
-            width: 8px;
-        }
-
-        ::-webkit-scrollbar-track {
-            background: #000000;
-        }
-
-        ::-webkit-scrollbar-thumb {
-            background: #333333;
-            border-radius: 4px;
-        }
-
-        ::-webkit-scrollbar-thumb:hover {
-            background: #555555;
-        }
-    </style>
-</head>
-
-<body class="bg-black text-white min-h-screen p-4">
-    <!-- Terminal Window -->
-    <div class="w-full max-w-6xl mx-auto terminal-border bg-black">
-
-        <!-- Terminal Header -->
-        <div class="border-b border-gray-700 px-4 py-2 flex items-center justify-between">
-            <div class="flex items-center space-x-4">
-                <span class="text-sm">root@localhost:~#</span>
-                <span class="text-xs text-gray-400">80x24</span>
-            </div>
-            <div class="flex space-x-1">
-                <div class="w-3 h-3 border border-white"></div>
-                <div class="w-3 h-3 bg-white"></div>
-            </div>
-        </div>
-
-        <!-- Terminal Body -->
-        <div class="p-6 min-h-[85vh] overflow-y-auto">
-
-            <!-- CLI-style Header -->
-            <div class="mb-8">
-                <div class="flex items-center space-x-2 mb-1">
-                    <span class="text-gray-500">╭─</span>
-                    <span class="text-white font-bold">deepdive</span>
-                    <span class="text-gray-500">v2.1.0</span>
+            .copy-btn:hover {
+                background: #000000;
+                color: #ffffff;
+                transform: translateY(-1px);
+            }
+            .copy-success {
+                animation: fadeInOut 2s ease-in-out;
+            }
+            @keyframes fadeInOut {
+                0%,
+                100% {
+                    opacity: 0;
+                }
+                20%,
+                80% {
+                    opacity: 1;
+                }
+            }
+            .prompt-line::before {
+                content: "$ ";
+                color: #ffffff;
+                font-weight: bold;
+            }
+            .terminal-border {
+                border: 1px solid #333333;
+                box-shadow: 0 0 20px rgba(255, 255, 255, 0.1);
+            }
+            .section-divider {
+                border-left: 2px solid #333333;
+            }
+            .highlight-text {
+                background: #ffffff;
+                color: #000000;
+                padding: 0 4px;
+            }
+            .ascii-art {
+                font-family: "JetBrains Mono", monospace;
+                line-height: 1;
+                white-space: pre;
+            }
+            /* Custom scrollbar for terminal feel */
+            ::-webkit-scrollbar {
+                width: 8px;
+            }
+            ::-webkit-scrollbar-track {
+                background: #000000;
+            }
+            ::-webkit-scrollbar-thumb {
+                background: #333333;
+                border-radius: 4px;
+            }
+            ::-webkit-scrollbar-thumb:hover {
+                background: #555555;
+            }
+            .tab-button {
+                background: #111111;
+                color: #ffffff;
+                border: 1px solid #333333;
+                transition: all 0.2s ease;
+            }
+            .tab-button.active {
+                background: #333333;
+                border-color: #ffffff;
+            }
+            .tab-button:hover {
+                background: #222222;
+                border-color: #666666;
+            }
+            .tab-content {
+                display: none;
+            }
+            .tab-content.active {
+                display: block;
+            }
+        </style>
+    </head>
+    <body class="bg-black text-white min-h-screen p-4">
+        <!-- Terminal Window -->
+        <div class="w-full max-w-6xl mx-auto terminal-border bg-black">
+            <!-- Terminal Header -->
+            <div
+                class="border-b border-gray-700 px-4 py-2 flex items-center justify-between"
+            >
+                <div class="flex items-center space-x-4">
+                    <span class="text-sm">universal-learning@system:~#</span>
+                    <span class="text-xs text-gray-400">120x40</span>
                 </div>
-                <div class="flex items-center space-x-2 mb-4">
-                    <span class="text-gray-500">╰─➤</span>
-                    <span class="text-white">Memory & Compiler Concepts Learning Protocol</span>
-                </div>
-                <div class="text-gray-400 text-sm pl-6">
-                    Advanced low-level programming mastery system for comprehensive CS education
+                <div class="flex space-x-1">
+                    <div class="w-3 h-3 border border-white"></div>
+                    <div class="w-3 h-3 bg-white"></div>
                 </div>
             </div>
-
-            <div class="prompt-line mb-4">
-                <span>./initiate-learning-protocol --verbose</span>
-                <span class="terminal-cursor"></span>
-            </div>
-
-            <div class="mb-8 pl-4 section-divider">
-                <p class="mb-2">[INFO] Loading comprehensive learning system...</p>
-                <p class="mb-2">[INFO] Initializing memory management concepts...</p>
-                <p class="mb-2">[INFO] Compiler architecture modules ready...</p>
-                <p class="mb-4">[SUCCESS] System ready for deep dive learning.</p>
-            </div>
-
-            <!-- System Status -->
-            <div class="mb-8">
+            <!-- Terminal Body -->
+            <div class="p-6 min-h-[85vh] overflow-y-auto">
+                <!-- CLI-style Header -->
+                <div class="mb-8">
+                    <div class="flex items-center space-x-2 mb-1">
+                        <span class="text-gray-500">╭─</span>
+                        <span class="text-white font-bold"
+                            >universal-learning</span
+                        >
+                        <span class="text-gray-500">v3.0.0</span>
+                    </div>
+                    <div class="flex items-center space-x-2 mb-4">
+                        <span class="text-gray-500">╰─➤</span>
+                        <span class="text-white"
+                            >Universal Learning System Protocol</span
+                        >
+                    </div>
+                    <div class="text-gray-400 text-sm pl-6">
+                        Master ANY topic with structured, comprehensive learning
+                        experiences
+                    </div>
+                </div>
                 <div class="prompt-line mb-4">
-                    <span>cat /proc/system_status</span>
+                    <span
+                        >./initialize-universal-learning
+                        --mode=comprehensive</span
+                    >
+                    <span class="terminal-cursor"></span>
                 </div>
-                <div class="pl-4 section-divider">
-                    <div class="grid md:grid-cols-2 gap-8 text-sm">
-                        <div>
-                            <p class="highlight-text mb-3 inline-block">[FEATURES]</p>
-                            <div class="space-y-1">
-                                <p>→ Generates comprehensive concept taxonomies</p>
-                                <p>→ Provides beginner-friendly explanations</p>
-                                <p>→ Creates interactive HTML documentation</p>
-                                <p>→ Builds structured progressive learning paths</p>
-                                <p>→ Includes hands-on coding exercises</p>
-                                <p>→ Offers real-world analogies and examples</p>
+                <div class="mb-8 pl-4 section-divider">
+                    <p class="mb-2">
+                        [INFO] Loading universal learning framework...
+                    </p>
+                    <p class="mb-2">
+                        [INFO] Initializing multi-domain knowledge system...
+                    </p>
+                    <p class="mb-2">
+                        [INFO] HTML documentation generator ready...
+                    </p>
+                    <p class="mb-4">
+                        [SUCCESS] System ready for any topic mastery.
+                    </p>
+                </div>
+
+                <!-- Tab Navigation -->
+                <div class="mb-8">
+                    <div class="prompt-line mb-4">
+                        <span>ls learning_modules/</span>
+                    </div>
+                    <div class="pl-4 section-divider">
+                        <div class="flex flex-wrap gap-2 mb-6">
+                            <button
+                                class="tab-button active px-4 py-2 text-sm font-mono"
+                                data-tab="universal"
+                            >
+                                📚 Universal Learning
+                            </button>
+                            <button
+                                class="tab-button px-4 py-2 text-sm font-mono"
+                                data-tab="html-generator"
+                            >
+                                🌐 HTML Generator
+                            </button>
+                            <button
+                                class="tab-button px-4 py-2 text-sm font-mono"
+                                data-tab="examples"
+                            >
+                                💡 Usage Examples
+                            </button>
+                            <button
+                                class="tab-button px-4 py-2 text-sm font-mono"
+                                data-tab="legacy"
+                            >
+                                ⚙️ CS Legacy
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Universal Learning Tab -->
+                <div id="universal" class="tab-content active">
+                    <!-- System Features -->
+                    <div class="mb-8">
+                        <div class="prompt-line mb-4">
+                            <span>cat /proc/universal_features</span>
+                        </div>
+                        <div class="pl-4 section-divider">
+                            <div class="grid md:grid-cols-2 gap-8 text-sm">
+                                <div>
+                                    <p class="highlight-text mb-3 inline-block">
+                                        [UNIVERSAL FEATURES]
+                                    </p>
+                                    <div class="space-y-1">
+                                        <p>
+                                            → Works with ANY subject (Science,
+                                            History, Arts, etc.)
+                                        </p>
+                                        <p>
+                                            → 10-section structured learning
+                                            format
+                                        </p>
+                                        <p>→ Adapts to all experience levels</p>
+                                        <p>→ Multi-modal learning approaches</p>
+                                        <p>
+                                            → Interactive exercises and
+                                            activities
+                                        </p>
+                                        <p>
+                                            → Real-world practical applications
+                                        </p>
+                                    </div>
+                                </div>
+                                <div>
+                                    <p class="highlight-text mb-3 inline-block">
+                                        [SUBJECT DOMAINS]
+                                    </p>
+                                    <div class="space-y-1">
+                                        <p>
+                                            → STEM (Math, Physics, Chemistry,
+                                            Biology)
+                                        </p>
+                                        <p>
+                                            → Humanities (History, Literature,
+                                            Philosophy)
+                                        </p>
+                                        <p>
+                                            → Arts (Music, Visual Arts, Creative
+                                            Writing)
+                                        </p>
+                                        <p>
+                                            → Business (Marketing, Finance,
+                                            Leadership)
+                                        </p>
+                                        <p>
+                                            → Life Skills (Cooking, Fitness,
+                                            Personal Finance)
+                                        </p>
+                                        <p>
+                                            → Technology (Programming, AI, Web
+                                            Design)
+                                        </p>
+                                    </div>
+                                </div>
                             </div>
                         </div>
-                        <div>
-                            <p class="highlight-text mb-3 inline-block">[KNOWLEDGE DOMAINS]</p>
-                            <div class="space-y-1">
-                                <p>→ Memory Management Fundamentals</p>
-                                <p>→ C/C++ Memory Specifics</p>
-                                <p>→ Compiler Architecture & Design</p>
-                                <p>→ Assembly and Machine Code</p>
-                                <p>→ Operating System Interface</p>
-                                <p>→ Performance and Optimization</p>
+                    </div>
+
+                    <!-- Copy Button for Universal Prompt -->
+                    <div class="text-center mb-8">
+                        <button
+                            id="copyUniversalBtn"
+                            class="copy-btn font-mono font-bold py-3 px-8 text-lg"
+                            onclick="copyUniversalPrompt()"
+                        >
+                            [COPY_UNIVERSAL_PROMPT]
+                        </button>
+                        <div
+                            id="universalSuccessMsg"
+                            class="copy-success hidden text-center font-mono mt-3"
+                        >
+                            [SUCCESS] Universal Learning Prompt copied to
+                            clipboard.
+                        </div>
+                    </div>
+
+                    <!-- Universal Prompt Content -->
+                    <div class="mb-8">
+                        <div class="prompt-line mb-4">
+                            <span>cat universal_learning_prompt.txt</span>
+                        </div>
+                        <div
+                            class="bg-black border border-gray-700 text-xs overflow-hidden"
+                        >
+                            <div
+                                class="border-b border-gray-700 px-3 py-1 text-gray-400"
+                            >
+                                universal_learning_prompt.txt - 4567 bytes
+                            </div>
+                            <pre
+                                id="universalPromptContent"
+                                class="p-4 overflow-x-auto text-white leading-relaxed"
+                            >
+# Universal Learning System Prompt
+
+You are an expert educator and knowledge synthesizer specializing in making complex topics accessible to everyone. Your mission is to transform any subject into clear, engaging, and comprehensive learning experiences that anyone can understand and apply.
+
+## Your Teaching Philosophy
+- **Universal Understanding**: Explain complex ideas so that anyone from age 12 to 120 can grasp them
+- **No Prerequisites**: Never assume prior knowledge - build from the ground up
+- **Multiple Learning Styles**: Include visual, auditory, kinesthetic, and reading/writing approaches
+- **Real-World Relevance**: Always connect abstract concepts to practical applications
+- **Active Learning**: Engage learners with questions, examples, and hands-on activities
+
+## Core Response Structure
+
+When asked about ANY topic, use this exact format:
+
+### 1. 🎯 **Quick Definition** (The Elevator Pitch)
+*[1-2 sentences that a 12-year-old could understand]*
+
+### 2. 🌟 **Real-World Connection** (Why Should I Care?)
+*[Explain why this matters in everyday life, career, or personal growth]*
+
+### 3. 🔍 **Deep Dive Explanation** (The Complete Picture)
+*[Comprehensive explanation broken into digestible chunks with subheadings]*
+
+**Core Concepts:**
+- Concept 1: [explanation]
+- Concept 2: [explanation]
+- Concept 3: [explanation]
+
+**Key Mechanisms/Processes:**
+- How it works step-by-step
+- What drives or controls it
+- What influences or affects it
+
+**Different Perspectives:**
+- Historical viewpoint
+- Modern understanding
+- Future implications
+
+### 4. 💡 **Practical Examples** (Show Me in Action)
+*[At least 3 examples ranging from simple to complex]*
+
+**Beginner Example:**
+[Simple, relatable example]
+
+**Intermediate Example:**
+[More detailed, realistic scenario]
+
+**Advanced Example:**
+[Complex, real-world application]
+
+### 5. ⚠️ **Common Misconceptions & Myths** (What People Get Wrong)
+*[Address frequent misunderstandings with corrections]*
+
+**Myth 1:** [Common belief]
+**Reality:** [Actual truth with explanation]
+
+**Myth 2:** [Another misconception]
+**Reality:** [Correction with reasoning]
+
+### 6. 🧪 **Try This Yourself** (Hands-On Activities)
+*[Practical exercises, experiments, or activities learners can do]*
+
+**Quick Activity (5 minutes):**
+[Simple exercise to reinforce learning]
+
+**Deep Dive Project (30+ minutes):**
+[More comprehensive activity for advanced understanding]
+
+### 7. 📚 **Related Topics** (What to Explore Next)
+*[Connected concepts that build on this knowledge]*
+
+**Foundation Topics** (learn these first):
+- Topic 1
+- Topic 2
+
+**Extension Topics** (learn these next):
+- Advanced topic 1
+- Advanced topic 2
+
+**Cross-Disciplinary Connections:**
+- How this relates to other fields
+- Interdisciplinary applications
+
+### 8. ❓ **Self-Check Questions** (Test Your Understanding)
+*[Questions to verify comprehension at different levels]*
+
+**Basic Understanding:**
+1. [Simple recall question]
+2. [Basic application question]
+
+**Critical Thinking:**
+1. [Analysis question]
+2. [Synthesis question]
+
+**Real-World Application:**
+1. [Practical scenario question]
+2. [Problem-solving question]
+
+### 9. 📝 **Key Takeaways** (Your Learning Summary)
+*[3-5 bullet points summarizing the most important insights]*
+
+- Key insight 1
+- Key insight 2
+- Key insight 3
+- Practical application
+- Next steps for learning
+
+### 10. 🚀 **Next Steps** (Continue Your Journey)
+*[Clear guidance on how to build on this knowledge]*
+
+**Immediate Actions:**
+- What to practice right now
+- Resources to explore today
+
+**Long-term Learning Path:**
+- Suggested sequence of related topics
+- Milestones to aim for
+
+## Adaptation Guidelines
+
+### For Different Subject Areas:
+- **STEM Topics**: Include formulas, diagrams descriptions, experimental evidence
+- **Humanities**: Focus on context, perspectives, cultural significance
+- **Arts**: Emphasize creativity, expression, technique, and cultural impact
+- **Business**: Highlight practical applications, case studies, ROI
+- **Life Skills**: Focus on step-by-step processes and immediate benefits
+- **History**: Provide timeline, cause-and-effect, multiple perspectives
+
+### For Different Audiences:
+- **Students**: Academic context, exam prep, career relevance
+- **Professionals**: Industry applications, competitive advantages, efficiency gains
+- **Hobbyists**: Fun facts, creative applications, community connections
+- **General Public**: Practical benefits, current events relevance, everyday applications
+
+### Language Adaptation:
+- **Beginner Level**: Simple vocabulary, short sentences, lots of analogies
+- **Intermediate Level**: Introduce technical terms with definitions
+- **Advanced Level**: Use appropriate jargon but still explain complex relationships
+
+## Special Features
+
+### Interactive Elements:
+- Include "Stop and think" moments
+- Add "Try this" mini-experiments
+- Suggest discussion questions
+- Provide "What if" scenarios
+
+### Multi-Modal Learning:
+- Describe visual elements when relevant
+- Suggest audio/video resources
+- Include kinesthetic activities
+- Provide reading lists
+
+### Cultural Sensitivity:
+- Use examples from diverse cultures
+- Acknowledge different perspectives
+- Avoid assumptions about background knowledge
+- Include global context when relevant
+
+## Quality Checkpoints
+
+Before finalizing your response, ensure:
+- ✅ A complete beginner could understand the basics
+- ✅ Advanced learners gain new insights
+- ✅ Examples are diverse and inclusive
+- ✅ Misconceptions are clearly corrected
+- ✅ Next steps are actionable and specific
+- ✅ The content is engaging and memorable
+
+## Usage Examples
+
+To activate this system, users can ask:
+- "Explain [topic] using the universal learning format"
+- "I want to understand [concept] - give me the full learning experience"
+- "Break down [subject] for complete beginners"
+- "Help me master [topic] step by step"
+
+## Response Personalization
+
+Always adapt your response based on these user indicators:
+- **Stated experience level**: Adjust complexity accordingly
+- **Specific interests**: Connect to their field or hobbies
+- **Learning goals**: Focus on relevant applications
+- **Time constraints**: Suggest quick vs. deep activities
+- **Preferred examples**: Use their suggested contexts
+
+Remember: Your goal is to make ANY topic accessible, engaging, and actionable for ANY learner.</pre
+                            >
+                        </div>
+                    </div>
+                </div>
+
+                <!-- HTML Generator Tab -->
+                <div id="html-generator" class="tab-content">
+                    <div class="mb-8">
+                        <div class="prompt-line mb-4">
+                            <span>cat html_documentation_generator.txt</span>
+                        </div>
+                        <div class="pl-4 section-divider">
+                            <p class="highlight-text mb-3 inline-block">
+                                [HTML GENERATOR FEATURES]
+                            </p>
+                            <div class="space-y-2 text-sm mb-6">
+                                <p>
+                                    → Beautiful, responsive documentation pages
+                                </p>
+                                <p>
+                                    → Dark/light theme toggle with smooth
+                                    transitions
+                                </p>
+                                <p>
+                                    → Interactive elements: progress bars, copy
+                                    buttons, quizzes
+                                </p>
+                                <p>
+                                    → Mobile-optimized with accessibility
+                                    features
+                                </p>
+                                <p>
+                                    → Premium design that rivals top educational
+                                    websites
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="text-center mb-8">
+                        <button
+                            id="copyHtmlBtn"
+                            class="copy-btn font-mono font-bold py-3 px-8 text-lg"
+                            onclick="copyHtmlPrompt()"
+                        >
+                            [COPY_HTML_GENERATOR]
+                        </button>
+                        <div
+                            id="htmlSuccessMsg"
+                            class="copy-success hidden text-center font-mono mt-3"
+                        >
+                            [SUCCESS] HTML Generator Prompt copied to clipboard.
+                        </div>
+                    </div>
+
+                    <div
+                        class="bg-black border border-gray-700 text-xs overflow-hidden"
+                    >
+                        <div
+                            class="border-b border-gray-700 px-3 py-1 text-gray-400"
+                        >
+                            html_generator_prompt.txt - 3421 bytes
+                        </div>
+                        <pre
+                            id="htmlPromptContent"
+                            class="p-4 overflow-x-auto text-white leading-relaxed"
+                        >
+# HTML Documentation Generator Prompt
+
+You are an expert web developer specializing in educational content presentation. Your role is to transform learning content into beautiful, interactive, and accessible HTML documentation pages.
+
+## Your Mission
+Convert any learning content into a stunning HTML page that enhances understanding through excellent design, interactivity, and user experience.
+
+## Core Design Principles
+- **Accessibility First**: WCAG 2.1 AA compliant
+- **Mobile Responsive**: Perfect on all devices
+- **Performance Optimized**: Fast loading and smooth interactions
+- **Visual Hierarchy**: Clear information architecture
+- **Cognitive Load Reduction**: Easy to scan and digest
+
+## Usage Instructions
+1. **Use after getting content from Universal Learning System**
+2. **Say**: "Now create an HTML documentation page for this content"
+3. **The system will generate**: Beautiful, interactive webpage with all content
+4. **Features included**: Theme toggle, progress tracking, interactive elements
+5. **Ready to save**: Complete HTML file you can save and use
+
+## Key Features Generated
+- **Modern Design**: Professional, clean interface with smooth animations
+- **Dark/Light Themes**: User preference with localStorage persistence
+- **Interactive Elements**: Progress bars, expandable sections, copy buttons
+- **Mobile Optimized**: Responsive design that works on all devices
+- **Fast Performance**: Optimized loading with minimal dependencies
+- **Accessibility**: Screen reader compatible with proper contrast ratios
+
+## Template Structure Overview
+The generator creates pages with:
+- Hero section with topic overview and tags
+- Interactive table of contents with smooth scrolling
+- Structured content sections matching the 10-section learning format
+- Code blocks with syntax highlighting and copy functionality
+- Interactive quizzes and self-check elements
+- Related topics footer with next learning suggestions
+- Progress tracking and floating navigation
+
+## Customization Options
+- **Color Schemes**: Easily customizable CSS variables
+- **Typography**: Modern font stacks with fallbacks
+- **Layout**: Responsive grid systems and flexible containers
+- **Animations**: Smooth transitions and engaging micro-interactions
+
+Simply provide your learning content and request HTML generation!</pre
+                        >
+                    </div>
+                </div>
+
+                <!-- Examples Tab -->
+                <div id="examples" class="tab-content">
+                    <div class="mb-8">
+                        <div class="prompt-line mb-4">
+                            <span>cat usage_examples.txt</span>
+                        </div>
+                        <div class="pl-4 section-divider">
+                            <p class="highlight-text mb-3 inline-block">
+                                [EXAMPLE PROMPTS]
+                            </p>
+                            <div class="space-y-4 text-sm">
+                                <div
+                                    class="bg-gray-900 border border-gray-600 rounded p-3"
+                                >
+                                    <p class="text-yellow-400 mb-2">
+                                        🧪 Science:
+                                    </p>
+                                    <p class="text-gray-300">
+                                        "Explain photosynthesis using the
+                                        universal learning format"
+                                    </p>
+                                </div>
+                                <div
+                                    class="bg-gray-900 border border-gray-600 rounded p-3"
+                                >
+                                    <p class="text-yellow-400 mb-2">
+                                        📚 History:
+                                    </p>
+                                    <p class="text-gray-300">
+                                        "Break down the causes of World War I
+                                        for complete beginners"
+                                    </p>
+                                </div>
+                                <div
+                                    class="bg-gray-900 border border-gray-600 rounded p-3"
+                                >
+                                    <p class="text-yellow-400 mb-2">🎨 Arts:</p>
+                                    <p class="text-gray-300">
+                                        "Help me understand color theory step by
+                                        step"
+                                    </p>
+                                </div>
+                                <div
+                                    class="bg-gray-900 border border-gray-600 rounded p-3"
+                                >
+                                    <p class="text-yellow-400 mb-2">
+                                        💼 Business:
+                                    </p>
+                                    <p class="text-gray-300">
+                                        "Explain supply chain management using
+                                        the universal learning format"
+                                    </p>
+                                </div>
+                                <div
+                                    class="bg-gray-900 border border-gray-600 rounded p-3"
+                                >
+                                    <p class="text-yellow-400 mb-2">
+                                        🍳 Life Skills:
+                                    </p>
+                                    <p class="text-gray-300">
+                                        "I want to understand fermentation -
+                                        give me the full learning experience"
+                                    </p>
+                                </div>
+                                <div
+                                    class="bg-gray-900 border border-gray-600 rounded p-3"
+                                >
+                                    <p class="text-yellow-400 mb-2">
+                                        📱 Technology:
+                                    </p>
+                                    <p class="text-gray-300">
+                                        "Break down blockchain technology for
+                                        complete beginners"
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mb-8">
+                        <div class="prompt-line mb-4">
+                            <span>cat workflow_example.txt</span>
+                        </div>
+                        <div class="pl-4 section-divider">
+                            <p class="highlight-text mb-3 inline-block">
+                                [TYPICAL WORKFLOW]
+                            </p>
+                            <div class="space-y-2 text-sm">
+                                <p>
+                                    <span class="highlight-text">Step 1:</span>
+                                    Copy Universal Learning Prompt → Deploy to
+                                    your LLM
+                                </p>
+                                <p>
+                                    <span class="highlight-text">Step 2:</span>
+                                    Ask: "Explain quantum physics using the
+                                    universal learning format"
+                                </p>
+                                <p>
+                                    <span class="highlight-text">Step 3:</span>
+                                    Get comprehensive 10-section structured
+                                    response
+                                </p>
+                                <p>
+                                    <span class="highlight-text">Step 4:</span>
+                                    Copy HTML Generator Prompt → Deploy to same
+                                    LLM
+                                </p>
+                                <p>
+                                    <span class="highlight-text">Step 5:</span>
+                                    Say: "Now create an HTML documentation page
+                                    for this content"
+                                </p>
+                                <p>
+                                    <span class="highlight-text">Step 6:</span>
+                                    Receive beautiful, interactive webpage ready
+                                    to save
+                                </p>
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
 
-            <!-- Copy Button -->
-            <div class="text-center mb-8">
-                <button id="copyBtn" class="copy-btn font-mono font-bold py-3 px-8 text-lg" onclick="copyPrompt()">
-                    [COPY_PROMPT]
-                </button>
-                <div id="successMsg" class="copy-success hidden text-center font-mono mt-3">
-                    [SUCCESS] Prompt copied to clipboard. Ready for deployment.
-                </div>
-            </div>
-
-            <!-- Main Prompt Content -->
-            <div class="mb-8">
-                <div class="prompt-line mb-4">
-                    <span>cat learning_prompt.txt</span>
-                </div>
-                <div class="bg-black border border-gray-700 text-xs overflow-hidden">
-                    <div class="border-b border-gray-700 px-3 py-1 text-gray-400">
-                        learning_prompt.txt - 2847 bytes
+                <!-- Legacy CS Tab -->
+                <div id="legacy" class="tab-content">
+                    <div class="mb-8">
+                        <div class="prompt-line mb-4">
+                            <span>cat legacy_cs_prompt.txt</span>
+                        </div>
+                        <div class="pl-4 section-divider">
+                            <p class="highlight-text mb-3 inline-block">
+                                [COMPUTER SCIENCE LEGACY]
+                            </p>
+                            <div class="space-y-2 text-sm mb-6">
+                                <p>→ Original deep-dive CS learning system</p>
+                                <p>
+                                    → Specialized for memory management &
+                                    compiler concepts
+                                </p>
+                                <p>→ Terminal-inspired documentation theme</p>
+                                <p>
+                                    → Advanced C/C++ code examples and exercises
+                                </p>
+                                <p>
+                                    → Now superseded by Universal Learning
+                                    System
+                                </p>
+                            </div>
+                        </div>
                     </div>
-                    <pre id="promptContent"
-                        class="p-4 overflow-x-auto text-white leading-relaxed">
+
+                    <div class="text-center mb-8">
+                        <button
+                            id="copyLegacyBtn"
+                            class="copy-btn font-mono font-bold py-3 px-8 text-lg"
+                            onclick="copyLegacyPrompt()"
+                        >
+                            [COPY_CS_LEGACY_PROMPT]
+                        </button>
+                        <div
+                            id="legacySuccessMsg"
+                            class="copy-success hidden text-center font-mono mt-3"
+                        >
+                            [SUCCESS] CS Legacy Prompt copied to clipboard.
+                        </div>
+                    </div>
+
+                    <div
+                        class="bg-black border border-gray-700 text-xs overflow-hidden"
+                    >
+                        <div
+                            class="border-b border-gray-700 px-3 py-1 text-gray-400"
+                        >
+                            cs_legacy_prompt.txt - 2847 bytes (original)
+                        </div>
+                        <pre
+                            id="legacyPromptContent"
+                            class="p-4 overflow-x-auto text-white leading-relaxed"
+                        >
 # Deep Dive Memory Management & Compiler Concepts Learning Prompt
 
 You are an expert computer science educator specializing in low-level programming, memory management, and compiler design. Your role is to help me master these complex topics through structured, comprehensive learning sessions.
@@ -250,417 +839,190 @@ When I ask about any concept, structure your response as follows:
 6. **Related Concepts** (what connects to this topic)
 7. **Practice Questions** (things I should think about)
 
-## Documentation Standard - REQUIRED HTML Structure
+[... Full legacy prompt content continues ...]</pre
+                        >
+                    </div>
+                </div>
 
-For each concept we discuss, create an HTML page following this EXACT template and styling:
+                <!-- Usage Instructions -->
+                <div class="mb-8">
+                    <div class="prompt-line mb-4">
+                        <span>man deployment</span>
+                    </div>
+                    <div class="pl-4 section-divider">
+                        <p class="highlight-text mb-3 inline-block">
+                            [DEPLOYMENT INSTRUCTIONS]
+                        </p>
+                        <div class="space-y-2 text-sm">
+                            <p>
+                                <span class="highlight-text">1.</span> Select
+                                desired learning system using tabs above
+                            </p>
+                            <p>
+                                <span class="highlight-text">2.</span> Execute
+                                copy operation using respective button
+                            </p>
+                            <p>
+                                <span class="highlight-text">3.</span> Deploy to
+                                target LLM system (ChatGPT, Claude, Gemini,
+                                etc.)
+                            </p>
+                            <p>
+                                <span class="highlight-text">4.</span> Begin
+                                learning with example prompts or your own topics
+                            </p>
+                            <p>
+                                <span class="highlight-text">5.</span>
+                                Optionally generate HTML documentation for your
+                                content
+                            </p>
+                        </div>
+                    </div>
+                </div>
 
-### Core Styling Requirements - Terminal-Inspired Theme
-- **Typography**: Use 'JetBrains Mono' or 'Fira Code' monospace font as primary, fallback to 'Courier New', monospace
-- **Color Scheme**: 
-  - Primary: Green-400 (#4ade80) for headers and accents (terminal green)
-  - Secondary: Green-300 (#86efac) for body text
-  - Background: Black (#000000) main / Gray-900 (#111827) sections
-  - Code blocks: Gray-950 background with green-400 text
-  - Borders: Green-500 (#22c55e) for dividers and accents
-  - Warning/Error: Red-400 (#f87171) 
-  - Success: Green-400 (#4ade80)
-  - Info: Cyan-400 (#22d3ee)
-- **Layout**: Maximum width 5xl (1024px), full terminal-like experience
-- **Spacing**: Consistent 1rem (16px) vertical rhythm for compact terminal feel
-- **Effects**: Subtle glow effects on text, cursor blinking animations
+                <!-- Footer -->
+                <div
+                    class="border-t border-gray-700 pt-4 text-center text-xs text-gray-400"
+                >
+                    <p>EOF - Universal Learning System ready for deployment</p>
+                    <p>
+                        Transform any topic into structured learning
+                        experiences...
+                    </p>
+                    <span class="terminal-cursor"></span>
+                </div>
+            </div>
+        </div>
 
-### Required HTML Template Structure
+        <script>
+            // Tab functionality
+            document.addEventListener("DOMContentLoaded", function () {
+                const tabButtons = document.querySelectorAll(".tab-button");
+                const tabContents = document.querySelectorAll(".tab-content");
 
-### Required HTML Template Structure
+                tabButtons.forEach((button) => {
+                    button.addEventListener("click", () => {
+                        const tabId = button.getAttribute("data-tab");
 
-    &lt;!DOCTYPE html&gt;
-    &lt;html lang="en" class="scroll-smooth"&gt;
-    &lt;head&gt;
-        &lt;meta charset="UTF-8"&gt;
-        &lt;meta name="viewport" content="width=device-width, initial-scale=1.0"&gt;
-        &lt;title&gt;[CONCEPT_NAME] - CS Terminal Docs&lt;/title&gt;
-        &lt;script src="https://cdn.tailwindcss.com"&gt;&lt;/script&gt;
-        &lt;link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&family=Fira+Code:wght@300;400;500;600;700&display=swap" rel="stylesheet"&gt;
-        &lt;script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/components/prism-core.min.js"&gt;&lt;/script&gt;
-        &lt;script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/plugins/autoloader/prism-autoloader.min.js"&gt;&lt;/script&gt;
-        &lt;link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/themes/prism-tomorrow.min.css" rel="stylesheet"&gt;
-        &lt;style&gt;
-            body { 
-                font-family: 'JetBrains Mono', 'Fira Code', 'Courier New', monospace; 
-                background: #000000;
-                color: #86efac;
-            }
-            .terminal-glow {
-                text-shadow: 0 0 5px rgba(74, 222, 128, 0.5);
-            }
-            .cursor-blink {
-                animation: blink 1s infinite;
-            }
-            @keyframes blink {
-                0%, 50% { opacity: 1; }
-                51%, 100% { opacity: 0; }
-            }
-            .terminal-border {
-                border: 1px solid #22c55e;
-                box-shadow: 0 0 10px rgba(34, 197, 94, 0.3);
-            }
-            .terminal-box {
-                background: linear-gradient(135deg, #111827 0%, #000000 100%);
-                border: 1px solid #22c55e;
-                box-shadow: inset 0 0 20px rgba(34, 197, 94, 0.1);
-            }
-            pre, code {
-                font-family: 'JetBrains Mono', 'Fira Code', monospace !important;
-                background: #0a0a0a !important;
-                color: #4ade80 !important;
-            }
-            .prompt::before {
-                content: "$ ";
-                color: #22d3ee;
-                font-weight: bold;
-            }
-        &lt;/style&gt;
-    &lt;/head&gt;
-    &lt;body class="bg-black text-green-300 min-h-screen"&gt;
-        &lt;!-- Terminal Header --&gt;
-        &lt;header class="terminal-border bg-gray-900 p-4 mb-6"&gt;
-            &lt;div class="max-w-5xl mx-auto flex justify-between items-center"&gt;
-                &lt;div class="flex items-center gap-3"&gt;
-                    &lt;div class="flex gap-2"&gt;
-                        &lt;div class="w-3 h-3 bg-red-500 rounded-full"&gt;&lt;/div&gt;
-                        &lt;div class="w-3 h-3 bg-yellow-500 rounded-full"&gt;&lt;/div&gt;
-                        &lt;div class="w-3 h-3 bg-green-500 rounded-full"&gt;&lt;/div&gt;
-                    &lt;/div&gt;
-                    &lt;span class="text-green-400 terminal-glow font-semibold"&gt;CS-TERMINAL-DOCS&lt;/span&gt;
-                &lt;/div&gt;
-                &lt;div class="text-cyan-400 text-sm"&gt;
-                    &lt;span class="prompt"&gt;&lt;/span&gt;documentation --topic=[CONCEPT_NAME]
-                &lt;/div&gt;
-            &lt;/div&gt;
-        &lt;/header&gt;
+                        // Remove active class from all buttons and contents
+                        tabButtons.forEach((btn) =>
+                            btn.classList.remove("active"),
+                        );
+                        tabContents.forEach((content) =>
+                            content.classList.remove("active"),
+                        );
 
-        &lt;!-- Main Terminal Content --&gt;
-        &lt;main class="max-w-5xl mx-auto px-6 pb-8"&gt;
-            &lt;!-- Command Prompt Header --&gt;
-            &lt;section class="mb-6"&gt;
-                &lt;div class="terminal-box rounded-lg p-6"&gt;
-                    &lt;div class="text-cyan-400 mb-2"&gt;&lt;span class="prompt"&gt;&lt;/span&gt;cat /docs/[CATEGORY]/[CONCEPT_NAME].md&lt;/div&gt;
-                    &lt;h1 class="text-4xl font-bold text-green-400 terminal-glow mb-4"&gt;[CONCEPT_NAME]&lt;/h1&gt;
-                    &lt;div class="flex flex-wrap gap-3 mb-4"&gt;
-                        &lt;span class="px-3 py-1 bg-green-900/30 text-green-400 border border-green-500 rounded text-sm"&gt;[CATEGORY]&lt;/span&gt;
-                        &lt;span class="px-3 py-1 bg-cyan-900/30 text-cyan-400 border border-cyan-500 rounded text-sm"&gt;[DIFFICULTY_LEVEL]&lt;/span&gt;
-                        &lt;span class="px-3 py-1 bg-yellow-900/30 text-yellow-400 border border-yellow-500 rounded text-sm"&gt;[ESTIMATED_TIME]&lt;/span&gt;
-                    &lt;/div&gt;
-                &lt;/div&gt;
-            &lt;/section&gt;
-
-            &lt;!-- Table of Contents Terminal Style --&gt;
-            &lt;section class="mb-6"&gt;
-                &lt;div class="terminal-box rounded-lg p-6"&gt;
-                    &lt;div class="text-cyan-400 mb-4"&gt;&lt;span class="prompt"&gt;&lt;/span&gt;ls -la sections/&lt;/div&gt;
-                    &lt;div class="grid grid-cols-1 md:grid-cols-2 gap-2 text-sm"&gt;
-                        &lt;div class="flex items-center gap-2 text-green-300 hover:text-green-400 cursor-pointer"&gt;
-                            &lt;span class="text-cyan-400"&gt;drwxr-xr-x&lt;/span&gt;
-                            &lt;a href="#definition" class="hover:underline"&gt;01_definition.md&lt;/a&gt;
-                        &lt;/div&gt;
-                        &lt;div class="flex items-center gap-2 text-green-300 hover:text-green-400 cursor-pointer"&gt;
-                            &lt;span class="text-cyan-400"&gt;drwxr-xr-x&lt;/span&gt;
-                            &lt;a href="#analogy" class="hover:underline"&gt;02_analogy.md&lt;/a&gt;
-                        &lt;/div&gt;
-                        &lt;div class="flex items-center gap-2 text-green-300 hover:text-green-400 cursor-pointer"&gt;
-                            &lt;span class="text-cyan-400"&gt;drwxr-xr-x&lt;/span&gt;
-                            &lt;a href="#technical" class="hover:underline"&gt;03_technical.md&lt;/a&gt;
-                        &lt;/div&gt;
-                        &lt;div class="flex items-center gap-2 text-green-300 hover:text-green-400 cursor-pointer"&gt;
-                            &lt;span class="text-cyan-400"&gt;drwxr-xr-x&lt;/span&gt;
-                            &lt;a href="#examples" class="hover:underline"&gt;04_examples.c&lt;/a&gt;
-                        &lt;/div&gt;
-                        &lt;div class="flex items-center gap-2 text-green-300 hover:text-green-400 cursor-pointer"&gt;
-                            &lt;span class="text-cyan-400"&gt;drwxr-xr-x&lt;/span&gt;
-                            &lt;a href="#pitfalls" class="hover:underline"&gt;05_pitfalls.md&lt;/a&gt;
-                        &lt;/div&gt;
-                        &lt;div class="flex items-center gap-2 text-green-300 hover:text-green-400 cursor-pointer"&gt;
-                            &lt;span class="text-cyan-400"&gt;drwxr-xr-x&lt;/span&gt;
-                            &lt;a href="#related" class="hover:underline"&gt;06_related.md&lt;/a&gt;
-                        &lt;/div&gt;
-                        &lt;div class="flex items-center gap-2 text-green-300 hover:text-green-400 cursor-pointer"&gt;
-                            &lt;span class="text-cyan-400"&gt;drwxr-xr-x&lt;/span&gt;
-                            &lt;a href="#practice" class="hover:underline"&gt;07_practice.md&lt;/a&gt;
-                        &lt;/div&gt;
-                    &lt;/div&gt;
-                &lt;/div&gt;
-            &lt;/section&gt;
-
-            &lt;!-- Content Sections (Terminal Command Style) --&gt;
-            &lt;section id="definition" class="mb-6"&gt;
-                &lt;div class="terminal-box rounded-lg p-6"&gt;
-                    &lt;div class="text-cyan-400 mb-3"&gt;&lt;span class="prompt"&gt;&lt;/span&gt;cat 01_definition.md&lt;/div&gt;
-                    &lt;h2 class="text-2xl font-bold text-green-400 terminal-glow mb-4 flex items-center gap-2"&gt;
-                        &lt;span class="text-yellow-400"&gt;#&lt;/span&gt; Simple Definition
-                    &lt;/h2&gt;
-                    &lt;div class="bg-gray-900/50 border-l-4 border-green-500 p-4 rounded-r"&gt;
-                        &lt;p class="text-green-300 leading-relaxed"&gt;[CONTENT]&lt;/p&gt;
-                    &lt;/div&gt;
-                &lt;/div&gt;
-            &lt;/section&gt;
-
-            &lt;!-- Code Block Terminal Style --&gt;
-            &lt;div class="terminal-box rounded-lg overflow-hidden mb-6"&gt;
-                &lt;div class="bg-gray-800 border-b border-green-500 px-4 py-2 flex justify-between items-center"&gt;
-                    &lt;span class="text-green-400 font-medium"&gt;[FILENAME].c&lt;/span&gt;
-                    &lt;div class="flex gap-1"&gt;
-                        &lt;div class="w-2 h-2 bg-red-500 rounded-full"&gt;&lt;/div&gt;
-                        &lt;div class="w-2 h-2 bg-yellow-500 rounded-full"&gt;&lt;/div&gt;
-                        &lt;div class="w-2 h-2 bg-green-500 rounded-full"&gt;&lt;/div&gt;
-                    &lt;/div&gt;
-                &lt;/div&gt;
-                &lt;div class="p-4 bg-black"&gt;
-                    &lt;div class="text-cyan-400 mb-2 text-sm"&gt;&lt;span class="prompt"&gt;&lt;/span&gt;vim [FILENAME].c&lt;/div&gt;
-                    &lt;pre class="overflow-x-auto"&gt;&lt;code class="language-c text-green-400"&gt;[CODE_CONTENT]&lt;/code&gt;&lt;/pre&gt;
-                &lt;/div&gt;
-            &lt;/div&gt;
-
-            &lt;!-- Interactive Terminal Demo --&gt;
-            &lt;div class="terminal-box rounded-lg p-6 mb-6"&gt;
-                &lt;div class="text-cyan-400 mb-3"&gt;&lt;span class="prompt"&gt;&lt;/span&gt;./interactive_demo --concept=[CONCEPT_NAME]&lt;/div&gt;
-                &lt;h3 class="text-xl font-semibold text-yellow-400 terminal-glow mb-3 flex items-center gap-2"&gt;
-                    &lt;span class="text-cyan-400"&gt;[INFO]&lt;/span&gt; Interactive Demo
-                &lt;/h3&gt;
-                &lt;div class="bg-gray-900/50 border border-cyan-500 rounded p-4"&gt;
-                    &lt;div class="space-y-4"&gt;
-                        [INTERACTIVE_CONTENT]
-                    &lt;/div&gt;
-                &lt;/div&gt;
-            &lt;/div&gt;
-
-            &lt;!-- Warning/Error Terminal Style --&gt;
-            &lt;div class="terminal-box rounded-lg p-6 mb-6"&gt;
-                &lt;div class="flex items-start gap-3"&gt;
-                    &lt;span class="text-red-400 font-bold text-lg"&gt;[ERROR]&lt;/span&gt;
-                    &lt;div&gt;
-                        &lt;h4 class="font-semibold text-red-400 mb-2"&gt;Common Pitfall Detected&lt;/h4&gt;
-                        &lt;p class="text-red-300"&gt;[CONTENT]&lt;/p&gt;
-                        &lt;div class="mt-2 text-yellow-400 text-sm"&gt;
-                            &lt;span class="prompt"&gt;&lt;/span&gt;Suggestion: [FIX_SUGGESTION]
-                        &lt;/div&gt;
-                    &lt;/div&gt;
-                &lt;/div&gt;
-            &lt;/div&gt;
-
-            &lt;!-- Navigation Footer Terminal Style --&gt;
-            &lt;footer class="mt-8 pt-6 border-t border-green-500"&gt;
-                &lt;div class="terminal-box rounded-lg p-6"&gt;
-                    &lt;div class="text-cyan-400 mb-4"&gt;&lt;span class="prompt"&gt;&lt;/span&gt;ls ../related_concepts/&lt;/div&gt;
-                    &lt;div class="flex flex-col md:flex-row justify-between items-start gap-4"&gt;
-                        &lt;div&gt;
-                            &lt;h3 class="font-semibold text-green-400 mb-3"&gt;Next Concepts to Explore:&lt;/h3&gt;
-                            &lt;div class="flex flex-wrap gap-2"&gt;
-                                &lt;a href="#" class="px-3 py-1 bg-green-900/30 text-green-400 border border-green-500 rounded hover:bg-green-800/30 transition-colors text-sm"&gt;[RELATED_CONCEPT_1]&lt;/a&gt;
-                                &lt;a href="#" class="px-3 py-1 bg-green-900/30 text-green-400 border border-green-500 rounded hover:bg-green-800/30 transition-colors text-sm"&gt;[RELATED_CONCEPT_2]&lt;/a&gt;
-                                &lt;a href="#" class="px-3 py-1 bg-green-900/30 text-green-400 border border-green-500 rounded hover:bg-green-800/30 transition-colors text-sm"&gt;[RELATED_CONCEPT_3]&lt;/a&gt;
-                            &lt;/div&gt;
-                        &lt;/div&gt;
-                        &lt;div class="text-cyan-400 text-sm"&gt;
-                            &lt;div&gt;Generated: [CURRENT_DATE]&lt;/div&gt;
-                            &lt;div&gt;PID: [RANDOM_PID] | CPU: [CPU_USAGE]% | MEM: [MEMORY_USAGE]MB&lt;/div&gt;
-                        &lt;/div&gt;
-                    &lt;/div&gt;
-                &lt;/div&gt;
-            &lt;/footer&gt;
-        &lt;/main&gt;
-
-        &lt;!-- Terminal Cursor and Commands Script --&gt;
-        &lt;script&gt;
-            // Add blinking cursor to last command
-            function addBlinkingCursor() {
-                const lastPrompt = document.querySelector('.prompt:last-of-type');
-                if (lastPrompt && !lastPrompt.querySelector('.cursor-blink')) {
-                    const cursor = document.createElement('span');
-                    cursor.textContent = '█';
-                    cursor.className = 'cursor-blink text-green-400';
-                    lastPrompt.parentElement.appendChild(cursor);
-                }
-            }
-            
-            // Simulate system stats
-            function updateSystemStats() {
-                const cpuUsage = Math.floor(Math.random() * 30) + 10;
-                const memUsage = Math.floor(Math.random() * 512) + 256;
-                const pid = Math.floor(Math.random() * 9000) + 1000;
-                
-                document.querySelectorAll('[CPU_USAGE]').forEach(el =&gt; {
-                    el.textContent = el.textContent.replace('[CPU_USAGE]', cpuUsage);
-                });
-                document.querySelectorAll('[MEMORY_USAGE]').forEach(el =&gt; {
-                    el.textContent = el.textContent.replace('[MEMORY_USAGE]', memUsage);
-                });
-                document.querySelectorAll('[RANDOM_PID]').forEach(el =&gt; {
-                    el.textContent = el.textContent.replace('[RANDOM_PID]', pid);
-                });
-            }
-            
-            // Initialize terminal effects
-            document.addEventListener('DOMContentLoaded', function() {
-                addBlinkingCursor();
-                updateSystemStats();
-                
-                // Add smooth scrolling
-                document.querySelectorAll('a[href^="#"]').forEach(anchor =&gt; {
-                    anchor.addEventListener('click', function (e) {
-                        e.preventDefault();
-                        const target = document.querySelector(this.getAttribute('href'));
-                        if (target) {
-                            target.scrollIntoView({ behavior: 'smooth' });
-                        }
+                        // Add active class to clicked button and corresponding content
+                        button.classList.add("active");
+                        document.getElementById(tabId).classList.add("active");
                     });
                 });
             });
-        &lt;/script&gt;
-    &lt;/body&gt;
-    &lt;/html&gt;&lt;div class="text-center md:text-left"&gt;
-                        &lt;h3 class="font-semibold text-slate-900 dark:text-white mb-2"&gt;🎯 Next Concepts to Explore&lt;/h3&gt;
-                        &lt;div class="flex flex-wrap gap-2"&gt;
-                            &lt;a href="#" class="px-3 py-1 bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 rounded-lg hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors text-sm"&gt;[RELATED_CONCEPT_1]&lt;/a&gt;
-                            &lt;a href="#" class="px-3 py-1 bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 rounded-lg hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors text-sm"&gt;[RELATED_CONCEPT_2]&lt;/a&gt;
-                        &lt;/div&gt;
-                    &lt;/div&gt;
-                    &lt;div class="text-sm text-slate-500 dark:text-slate-400"&gt;
-                        Generated: [CURRENT_DATE]
-                    &lt;/div&gt;
-                &lt;/div&gt;
-            &lt;/footer&gt;
-        &lt;/main&gt;
 
-        &lt;!-- Theme Toggle Script --&gt;
-        &lt;script&gt;
-            const themeToggle = document.getElementById('theme-toggle');
-            const html = document.documentElement;
-            
-            themeToggle.addEventListener('click', () =&gt; {
-                html.classList.toggle('dark');
-                localStorage.setItem('theme', html.classList.contains('dark') ? 'dark' : 'light');
-            });
-            
-            // Load saved theme
-            if (localStorage.getItem('theme') === 'dark') {
-                html.classList.add('dark');
+            function copyUniversalPrompt() {
+                const promptText = document.getElementById(
+                    "universalPromptContent",
+                ).textContent;
+                navigator.clipboard
+                    .writeText(promptText)
+                    .then(() => {
+                        showCopySuccess(
+                            "copyUniversalBtn",
+                            "universalSuccessMsg",
+                            "[COPY_UNIVERSAL_PROMPT]",
+                        );
+                    })
+                    .catch(handleCopyError);
             }
-        &lt;/script&gt;
-    &lt;/body&gt;
-    &lt;/html&gt;
 
-### Mandatory Styling Specifications
-1. **Icons**: Use Unicode emojis for section headers (🎯, 🔧, ⚠️, 🧪, etc.)
-2. **Code Syntax**: Always use Prism.js with the "tomorrow" theme
-3. **Responsive Breakpoints**: 
-   - Mobile: Full width with 24px padding
-   - Tablet: max-width 768px
-   - Desktop: max-width 896px (4xl)
-4. **Color Consistency**: 
-   - All blue elements use blue-600/blue-400 (dark mode)
-   - Warning elements use amber-500
-   - Success elements use green-500
-   - Code elements use gray-100/gray-800
+            function copyHtmlPrompt() {
+                const htmlPromptText = `# HTML Documentation Generator Prompt
 
-### Required Interactive Elements
-- **Dark/Light theme toggle** (mandatory on every page)
-- **Smooth scroll navigation** to table of contents
-- **Copy code button** for all code blocks
-- **Collapsible sections** for advanced topics
-- **Progress indicator** showing reading completion
+You are an expert web developer specializing in educational content presentation. Your role is to transform learning content into beautiful, interactive, and accessible HTML documentation pages.
 
-### Content Organization Rules
-1. **Consistent section icons and headers**
-2. **Standardized callout boxes** (warnings, tips, examples)
-3. **Uniform code block styling** with filename headers
-4. **Related concepts footer** on every page
-5. **Breadcrumb navigation** showing concept relationships
+## Your Mission
+Convert any learning content into a stunning HTML page that enhances understanding through excellent design, interactivity, and user experience.
 
-## Topic Categories to Explore
-[Keep the existing 6 categories as they are...]
+## Usage Instructions
+When a user provides learning content and asks for HTML documentation:
 
-## Learning Session Format
-1. Start with the structured explanation (format above).
-2. Create the HTML documentation page **using the exact template provided**.
-3. Ensure all styling follows the mandatory specifications.
-4. Suggest 2-3 related concepts I should learn next.
-5. Offer to dive deeper into any specific aspect.
-6. Provide hands-on exercises or experiments I can try.
+1. Create a complete HTML page using modern web standards
+2. Include responsive design with mobile-first approach
+3. Add interactive elements like progress bars, theme toggles, copy buttons
+4. Use semantic HTML with proper accessibility features
+5. Include smooth animations and transitions
+6. Make it visually appealing with professional design
+7. Ensure fast loading and optimal performance
 
-## Special Instructions
-- **Never deviate from the HTML template structure**
-- **Always use the specified color scheme and typography**
-- **Include all mandatory interactive elements**
-- **Maintain visual consistency across all documentation pages**
-- Always ask clarifying questions if my request is unclear.
-- Suggest practical experiments I can do on my own machine.
-- Recommend tools for visualization or debugging.
-- Point out platform-specific differences when relevant (e.g., Windows vs. Linux).
-- Include historical context when it helps understanding.
+## Core Features to Include
+- **Theme Toggle**: Dark/light mode with localStorage persistence
+- **Progress Tracking**: Reading progress indicator
+- **Interactive Navigation**: Smooth scrolling table of contents
+- **Copy Functionality**: Code blocks with copy buttons
+- **Responsive Design**: Works perfectly on all devices
+- **Accessibility**: WCAG 2.1 AA compliant
+- **Performance**: Optimized loading and rendering
 
-Now, please start by giving me those comprehensive concept lists for all 6 categories above. Make each list detailed enough that we could spend weeks exploring every item, with concepts ranging from absolute beginner to advanced levels.
-</pre>
-                </div>
-            </div>
+Simply ask: "Create an HTML documentation page for this content" after receiving structured learning content.`;
 
-            <!-- Usage Instructions -->
-            <div class="mb-8">
-                <div class="prompt-line mb-4">
-                    <span>man usage</span>
-                </div>
-                <div class="pl-4 section-divider">
-                    <p class="highlight-text mb-3 inline-block">[DEPLOYMENT INSTRUCTIONS]</p>
-                    <div class="space-y-2 text-sm">
-                        <p><span class="highlight-text">1.</span> Execute copy operation using button above</p>
-                        <p><span class="highlight-text">2.</span> Deploy to target LLM system (ChatGPT, Claude, Gemini)
-                        </p>
-                        <p><span class="highlight-text">3.</span> Await comprehensive concept taxonomy generation</p>
-                        <p><span class="highlight-text">4.</span> Select initial learning target from provided lists</p>
-                        <p><span class="highlight-text">5.</span> Follow structured learning protocol for mastery</p>
-                    </div>
-                </div>
-            </div>
+                navigator.clipboard
+                    .writeText(htmlPromptText)
+                    .then(() => {
+                        showCopySuccess(
+                            "copyHtmlBtn",
+                            "htmlSuccessMsg",
+                            "[COPY_HTML_GENERATOR]",
+                        );
+                    })
+                    .catch(handleCopyError);
+            }
 
-            <!-- Footer -->
-            <div class="border-t border-gray-700 pt-4 text-center text-xs text-gray-400">
-                <p>EOF - End of learning protocol initialization</p>
-                <p>System ready. Awaiting user input...</p>
-                <span class="terminal-cursor"></span>
-            </div>
-        </div>
-    </div>
+            function copyLegacyPrompt() {
+                const legacyText = document.getElementById(
+                    "legacyPromptContent",
+                ).textContent;
+                navigator.clipboard
+                    .writeText(legacyText)
+                    .then(() => {
+                        showCopySuccess(
+                            "copyLegacyBtn",
+                            "legacySuccessMsg",
+                            "[COPY_CS_LEGACY_PROMPT]",
+                        );
+                    })
+                    .catch(handleCopyError);
+            }
 
-    <script>
-        function copyPrompt() {
-            const promptText = document.getElementById('promptContent').textContent;
-            navigator.clipboard.writeText(promptText).then(() => {
-                const btn = document.getElementById('copyBtn');
-                const msg = document.getElementById('successMsg');
+            function showCopySuccess(btnId, msgId, originalText) {
+                const btn = document.getElementById(btnId);
+                const msg = document.getElementById(msgId);
 
-                msg.classList.remove('hidden');
-                btn.innerHTML = '[COPIED]';
-                btn.style.background = '#000000';
-                btn.style.color = '#ffffff';
+                msg.classList.remove("hidden");
+                btn.innerHTML = "[COPIED]";
+                btn.style.background = "#000000";
+                btn.style.color = "#ffffff";
 
                 setTimeout(() => {
-                    msg.classList.add('hidden');
-                    btn.innerHTML = '[COPY_PROMPT]';
-                    btn.style.background = '#ffffff';
-                    btn.style.color = '#000000';
+                    msg.classList.add("hidden");
+                    btn.innerHTML = originalText;
+                    btn.style.background = "#ffffff";
+                    btn.style.color = "#000000";
                 }, 2000);
-            }).catch(err => {
-                console.error('Failed to copy text: ', err);
-                alert('[ERROR] Copy operation failed. Please select and copy manually.');
-            });
-        }
-
-        // Add some terminal-like interactions
-        document.addEventListener('keydown', function (e) {
-            if (e.ctrlKey && e.key === 'c') {
-                console.log('^C');
             }
-        });
-    </script>
-</body>
 
+            function handleCopyError(err) {
+                console.error("Failed to copy text: ", err);
+                alert(
+                    "[ERROR] Copy operation failed. Please select and copy manually.",
+                );
+            }
+
+            // Add some terminal-like interactions
+            document.addEventListener("keydown", function (e) {
+                if (e.ctrlKey && e.key === "c") {
+                    console.log("^C");
+                }
+            });
+        </script>
+    </body>
 </html>
