@@ -938,64 +938,473 @@ Simply describe your project and let the system create a comprehensive, actionab
                         <pre
                             id="htmlPromptContent"
                             class="p-4 overflow-x-auto text-white leading-relaxed"
-                        ># Enhanced HTML Documentation Generator for Natural Learning Flow
+                        ># Complete HTML Template Generator
 
-You are an expert web developer specializing in educational content presentation with deep understanding of the Natural Learning Flow System. Your role is to transform 4-phase learning content into beautiful, interactive, and accessible HTML documentation pages.
+You generate complete HTML pages using the fixed template below. Only fill in the dynamic content placeholders with the Natural Learning Flow content provided.
 
-## Your Mission
-Convert Natural Learning Flow content into stunning HTML pages that enhance understanding through excellent design, interactivity, and user experience while preserving the 4-phase learning progression.
+## Complete HTML Template
 
-## Core Design Principles
-- **Phase-Based Navigation**: Clear visual distinction between the 4 learning phases
-- **Progress Tracking**: Visual indicators showing learner's journey through phases
-- **Accessibility First**: WCAG 2.1 AA compliant
-- **Mobile Responsive**: Perfect on all devices
-- **Performance Optimized**: Fast loading and smooth interactions
-- **Cognitive Load Reduction**: Easy to scan and digest with phase-appropriate styling
+```html
+&lt;!DOCTYPE html&gt;
+&lt;html lang="en"&gt;
+&lt;head&gt;
+    &lt;meta charset="UTF-8"&gt;
+    &lt;meta name="viewport" content="width=device-width, initial-scale=1.0"&gt;
+    &lt;title&gt;{{TOPIC}} - Learning Guide&lt;/title&gt;
+    &lt;style&gt;
+        :root {
+            --primary: #2563eb;
+            --secondary: #64748b;
+            --success: #059669;
+            --warning: #d97706;
+            --danger: #dc2626;
+            --background: #f8fafc;
+            --surface: #ffffff;
+            --text-primary: #1e293b;
+            --text-secondary: #64748b;
+            --border: #e2e8f0;
+            --code-bg: #1e293b;
+            --code-text: #f1f5f9;
+        }
+        
+        [data-theme="dark"] {
+            --background: #0f172a;
+            --surface: #1e293b;
+            --text-primary: #f1f5f9;
+            --text-secondary: #94a3b8;
+            --border: #334155;
+        }
+        
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+            color: var(--text-primary);
+            background: var(--background);
+            transition: all 0.3s ease;
+        }
+        
+        .container { max-width: 1024px; margin: 0 auto; padding: 1rem; }
+        
+        header {
+            background: var(--surface);
+            border-bottom: 1px solid var(--border);
+            padding: 1rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        h1 { font-size: 2rem; font-weight: 700; }
+        
+        .progress-container {
+            width: 200px;
+            height: 4px;
+            background: var(--border);
+            border-radius: 2px;
+            overflow: hidden;
+        }
+        
+        .progress-bar {
+            height: 100%;
+            background: var(--primary);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+        
+        nav {
+            background: var(--surface);
+            padding: 1rem 0;
+            border-bottom: 1px solid var(--border);
+        }
+        
+        .nav-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 0.5rem;
+        }
+        
+        .nav-item {
+            padding: 0.5rem 1rem;
+            background: var(--background);
+            border: 1px solid var(--border);
+            border-radius: 0.375rem;
+            text-decoration: none;
+            color: var(--text-primary);
+            font-size: 0.875rem;
+            transition: all 0.2s ease;
+            cursor: pointer;
+        }
+        
+        .nav-item:hover { background: var(--primary); color: white; }
+        .nav-item.completed { background: var(--success); color: white; }
+        
+        main { margin: 2rem 0; }
+        
+        section {
+            background: var(--surface);
+            margin: 3rem 0;
+            padding: 2rem;
+            border-radius: 0.5rem;
+            border: 1px solid var(--border);
+        }
+        
+        .section-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .section-icon {
+            width: 3rem;
+            height: 3rem;
+            border-radius: 0.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            color: white;
+            font-weight: bold;
+        }
+        
+        .section-title { font-size: 1.5rem; font-weight: 600; }
+        
+        .hook { background: var(--primary); }
+        .mechanics { background: var(--secondary); }
+        .examples { background: var(--success); }
+        .practice { background: var(--warning); }
+        .warnings { background: var(--danger); }
+        .connections { background: var(--primary); }
+        .test { background: var(--success); }
+        .growth { background: var(--secondary); }
+        
+        .content p { margin: 1rem 0; }
+        .content ul, .content ol { margin: 1rem 0; padding-left: 2rem; }
+        .content li { margin: 0.5rem 0; }
+        
+        .code-block {
+            background: var(--code-bg);
+            color: var(--code-text);
+            padding: 1rem;
+            border-radius: 0.375rem;
+            font-family: 'SF Mono', Monaco, 'Cascadia Code', monospace;
+            font-size: 0.875rem;
+            overflow-x: auto;
+            margin: 1rem 0;
+        }
+        
+        .action-box {
+            background: linear-gradient(135deg, var(--warning), #f59e0b);
+            color: white;
+            padding: 1.5rem;
+            border-radius: 0.5rem;
+            margin: 1rem 0;
+        }
+        
+        .warning-box {
+            background: linear-gradient(135deg, var(--danger), #ef4444);
+            color: white;
+            padding: 1.5rem;
+            border-radius: 0.5rem;
+            margin: 1rem 0;
+        }
+        
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin: 0.5rem 0;
+            cursor: pointer;
+        }
+        
+        .checkbox {
+            width: 1rem;
+            height: 1rem;
+            border: 2px solid var(--border);
+            border-radius: 0.25rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .checkbox.checked {
+            background: var(--success);
+            border-color: var(--success);
+            color: white;
+        }
+        
+        .theme-toggle {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 0.375rem;
+            cursor: pointer;
+            font-size: 0.875rem;
+        }
+        
+        footer {
+            text-align: center;
+            padding: 2rem 0;
+            border-top: 1px solid var(--border);
+            margin-top: 3rem;
+        }
+        
+        @media (max-width: 768px) {
+            .container { padding: 0.5rem; }
+            h1 { font-size: 1.5rem; }
+            section { padding: 1rem; }
+            .header-content { flex-direction: column; gap: 1rem; }
+        }
+        
+        @media print {
+            header, nav, .theme-toggle { display: none; }
+            section { break-inside: avoid; margin: 1rem 0; }
+        }
+    &lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;header&gt;
+        &lt;div class="container"&gt;
+            &lt;div class="header-content"&gt;
+                &lt;h1&gt;{{TOPIC}}&lt;/h1&gt;
+                &lt;div&gt;
+                    &lt;div class="progress-container"&gt;
+                        &lt;div class="progress-bar" id="progressBar"&gt;&lt;/div&gt;
+                    &lt;/div&gt;
+                    &lt;button class="theme-toggle" onclick="toggleTheme()"&gt;🌙&lt;/button&gt;
+                &lt;/div&gt;
+            &lt;/div&gt;
+        &lt;/div&gt;
+    &lt;/header&gt;
 
-## Usage Instructions
-1. **Use after getting content from Natural Learning Flow System**
-2. **Say**: "Now create an HTML documentation page for this 4-phase learning content"
-3. **The system will generate**: Beautiful, interactive webpage with phase-based navigation
-4. **Features included**: Phase progress bars, theme toggle, interactive elements
-5. **Ready to save**: Complete HTML file optimized for the 4-phase learning flow
+    &lt;nav&gt;
+        &lt;div class="container"&gt;
+            &lt;div class="nav-grid"&gt;
+                &lt;a class="nav-item" href="#hook" data-section="0"&gt;🎯 The Hook&lt;/a&gt;
+                &lt;a class="nav-item" href="#mechanics" data-section="1"&gt;⚙️ How It Works&lt;/a&gt;
+                &lt;a class="nav-item" href="#examples" data-section="2"&gt;🌍 Real Examples&lt;/a&gt;
+                &lt;a class="nav-item" href="#practice" data-section="3"&gt;🛠️ Do This Now&lt;/a&gt;
+                &lt;a class="nav-item" href="#warnings" data-section="4"&gt;⚠️ Avoid These&lt;/a&gt;
+                &lt;a class="nav-item" href="#connections" data-section="5"&gt;🔗 Connections&lt;/a&gt;
+                &lt;a class="nav-item" href="#test" data-section="6"&gt;🎯 Test Yourself&lt;/a&gt;
+                &lt;a class="nav-item" href="#growth" data-section="7"&gt;📈 Level Up&lt;/a&gt;
+            &lt;/div&gt;
+        &lt;/div&gt;
+    &lt;/nav&gt;
 
-## Key Features for Natural Learning Flow
-- **Phase Progress Indicator**: Visual progress bar showing current phase completion
-- **Phase-Based Color Coding**: Each phase has distinct visual identity using grayscale tones
-  - Phase 1 (Hook & Foundation): Light gray, engaging presentation
-  - Phase 2 (Core Understanding): Medium gray, structured layout
-  - Phase 3 (Practical Application): Dark gray, action-oriented design
-  - Phase 4 (Mastery Path): White highlights, achievement focus
-- **Interactive Phase Navigation**: Jump between phases with smooth transitions
-- **Time Estimates**: Show estimated reading/activity time for each section
-- **Action Callouts**: Highlight "Try This Now" and interactive elements
-- **Learning Checkpoints**: Visual markers for self-assessment sections
+    &lt;main class="container"&gt;
+        &lt;section id="hook"&gt;
+            &lt;div class="section-header"&gt;
+                &lt;div class="section-icon hook"&gt;🎯&lt;/div&gt;
+                &lt;h2 class="section-title"&gt;THE HOOK&lt;/h2&gt;
+            &lt;/div&gt;
+            &lt;div class="content"&gt;
+                {{HOOK_CONTENT}}
+            &lt;/div&gt;
+        &lt;/section&gt;
 
-## Template Structure for 4-Phase Flow
-- Hero section with topic overview and total learning time
-- Interactive phase selector with progress visualization
-- Phase 1: Hook & Foundation (visually engaging, curiosity-driven)
-- Phase 2: Core Understanding (clear, structured, informative)
-- Phase 3: Practical Application (action-oriented, hands-on design)
-- Phase 4: Mastery Path (growth-focused, future-oriented)
-- Learning summary with key takeaways
-- Next steps and related topics navigation
+        &lt;section id="mechanics"&gt;
+            &lt;div class="section-header"&gt;
+                &lt;div class="section-icon mechanics"&gt;⚙️&lt;/div&gt;
+                &lt;h2 class="section-title"&gt;HOW IT WORKS&lt;/h2&gt;
+            &lt;/div&gt;
+            &lt;div class="content"&gt;
+                {{MECHANICS_CONTENT}}
+            &lt;/div&gt;
+        &lt;/section&gt;
 
-## Enhanced Interactive Elements
-- **Phase Completion Tracking**: Mark phases as completed
-- **Activity Timers**: Built-in timers for timed activities
-- **Progress Persistence**: Remember user's progress across sessions
-- **Share Progress**: Social sharing of learning milestones
-- **Print-Friendly**: Optimized layouts for offline reference
+        &lt;section id="examples"&gt;
+            &lt;div class="section-header"&gt;
+                &lt;div class="section-icon examples"&gt;🌍&lt;/div&gt;
+                &lt;h2 class="section-title"&gt;REAL EXAMPLES&lt;/h2&gt;
+            &lt;/div&gt;
+            &lt;div class="content"&gt;
+                {{EXAMPLES_CONTENT}}
+            &lt;/div&gt;
+        &lt;/section&gt;
 
-## Responsive Design Considerations
-- **Mobile-First**: Optimized for learning on any device
-- **Touch-Friendly**: Large, accessible interactive elements
-- **Offline Capable**: Works without internet connection
-- **Fast Loading**: Minimal dependencies, optimized assets
+        &lt;section id="practice"&gt;
+            &lt;div class="section-header"&gt;
+                &lt;div class="section-icon practice"&gt;🛠️&lt;/div&gt;
+                &lt;h2 class="section-title"&gt;DO THIS NOW&lt;/h2&gt;
+            &lt;/div&gt;
+            &lt;div class="content"&gt;
+                &lt;div class="action-box"&gt;
+                    {{PRACTICE_CONTENT}}
+                &lt;/div&gt;
+            &lt;/div&gt;
+        &lt;/section&gt;
 
-Simply provide your Natural Learning Flow content and request enhanced HTML generation!</pre>
+        &lt;section id="warnings"&gt;
+            &lt;div class="section-header"&gt;
+                &lt;div class="section-icon warnings"&gt;⚠️&lt;/div&gt;
+                &lt;h2 class="section-title"&gt;AVOID THESE&lt;/h2&gt;
+            &lt;/div&gt;
+            &lt;div class="content"&gt;
+                &lt;div class="warning-box"&gt;
+                    {{WARNINGS_CONTENT}}
+                &lt;/div&gt;
+            &lt;/div&gt;
+        &lt;/section&gt;
+
+        &lt;section id="connections"&gt;
+            &lt;div class="section-header"&gt;
+                &lt;div class="section-icon connections"&gt;🔗&lt;/div&gt;
+                &lt;h2 class="section-title"&gt;CONNECTIONS&lt;/h2&gt;
+            &lt;/div&gt;
+            &lt;div class="content"&gt;
+                {{CONNECTIONS_CONTENT}}
+            &lt;/div&gt;
+        &lt;/section&gt;
+
+        &lt;section id="test"&gt;
+            &lt;div class="section-header"&gt;
+                &lt;div class="section-icon test"&gt;🎯&lt;/div&gt;
+                &lt;h2 class="section-title"&gt;TEST YOURSELF&lt;/h2&gt;
+            &lt;/div&gt;
+            &lt;div class="content"&gt;
+                {{TEST_CONTENT}}
+            &lt;/div&gt;
+        &lt;/section&gt;
+
+        &lt;section id="growth"&gt;
+            &lt;div class="section-header"&gt;
+                &lt;div class="section-icon growth"&gt;📈&lt;/div&gt;
+                &lt;h2 class="section-title"&gt;LEVEL UP&lt;/h2&gt;
+            &lt;/div&gt;
+            &lt;div class="content"&gt;
+                {{GROWTH_CONTENT}}
+            &lt;/div&gt;
+        &lt;/section&gt;
+    &lt;/main&gt;
+
+    &lt;footer&gt;
+        &lt;div class="container"&gt;
+            &lt;p&gt;Learning journey completed! 🎉&lt;/p&gt;
+            &lt;div class="checkbox-item" style="justify-content: center; margin-top: 1rem;"&gt;
+                &lt;div class="checkbox" onclick="toggleComplete(this)"&gt;&lt;/div&gt;
+                &lt;span&gt;Mark this topic as mastered&lt;/span&gt;
+            &lt;/div&gt;
+        &lt;/div&gt;
+    &lt;/footer&gt;
+
+    &lt;script&gt;
+        // Theme toggle
+        function toggleTheme() {
+            const body = document.body;
+            const currentTheme = body.getAttribute('data-theme');
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            body.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+        }
+
+        // Load saved theme
+        const savedTheme = localStorage.getItem('theme') || 'light';
+        document.body.setAttribute('data-theme', savedTheme);
+
+        // Progress tracking
+        function updateProgress() {
+            const sections = document.querySelectorAll('section');
+            const completed = document.querySelectorAll('.nav-item.completed');
+            const progress = (completed.length / sections.length) * 100;
+            document.getElementById('progressBar').style.width = progress + '%';
+        }
+
+        // Section completion
+        document.querySelectorAll('.nav-item').forEach(item =&gt; {
+            item.addEventListener('click', function() {
+                this.classList.toggle('completed');
+                updateProgress();
+                // Save progress
+                const completedSections = Array.from(document.querySelectorAll('.nav-item.completed'))
+                    .map(el =&gt; el.getAttribute('data-section'));
+                localStorage.setItem('completed-{{TOPIC_SLUG}}', JSON.stringify(completedSections));
+            });
+        });
+
+        // Load saved progress
+        const savedProgress = localStorage.getItem('completed-{{TOPIC_SLUG}}');
+        if (savedProgress) {
+            const completed = JSON.parse(savedProgress);
+            completed.forEach(sectionNum =&gt; {
+                const navItem = document.querySelector(`[data-section="${sectionNum}"]`);
+                if (navItem) navItem.classList.add('completed');
+            });
+            updateProgress();
+        }
+
+        // Checkbox functionality
+        function toggleComplete(checkbox) {
+            checkbox.classList.toggle('checked');
+            if (checkbox.classList.contains('checked')) {
+                checkbox.innerHTML = '✓';
+            } else {
+                checkbox.innerHTML = '';
+            }
+        }
+
+        // Smooth scrolling
+        document.querySelectorAll('a[href^="#"]').forEach(anchor =&gt; {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            });
+        });
+    &lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+```
+
+## Dynamic Content Placeholders
+
+Replace these placeholders with actual content:
+
+- `{{TOPIC}}` - Main topic title
+- `{{TOPIC_SLUG}}` - URL-safe topic name (lowercase, hyphens)
+- `{{HOOK_CONTENT}}` - The Hook section content
+- `{{MECHANICS_CONTENT}}` - How It Works section content
+- `{{EXAMPLES_CONTENT}}` - Real Examples section content
+- `{{PRACTICE_CONTENT}}` - Do This Now section content
+- `{{WARNINGS_CONTENT}}` - Avoid These section content
+- `{{CONNECTIONS_CONTENT}}` - Connections section content
+- `{{TEST_CONTENT}}` - Test Yourself section content
+- `{{GROWTH_CONTENT}}` - Level Up section content
+
+## Content Formatting Rules
+
+**For code blocks:**
+```html
+&lt;div class="code-block"&gt;your code here&lt;/div&gt;
+```
+
+**For action items:**
+Already wrapped in `.action-box` for practice section
+
+**For warnings:**
+Already wrapped in `.warning-box` for warnings section
+
+**For checkboxes:**
+```html
+&lt;div class="checkbox-item"&gt;
+    &lt;div class="checkbox" onclick="toggleComplete(this)"&gt;&lt;/div&gt;
+    &lt;span&gt;Task description&lt;/span&gt;
+&lt;/div
+```
+
+## Usage
+Simply provide the Natural Learning Flow content and say: **"Fill the HTML template"**
+
+The system will replace all placeholders with the actual content, maintaining perfect consistency across all pages.</pre>
                         </div>
                     </div>
                 </div>
