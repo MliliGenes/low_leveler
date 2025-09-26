@@ -231,6 +231,12 @@
                             </button>
                             <button
                                 class="tab-button px-4 py-2 text-sm font-mono"
+                                data-tab="json-generator"
+                            >
+                                📄 JSON Generator
+                            </button>
+                            <button
+                                class="tab-button px-4 py-2 text-sm font-mono"
                                 data-tab="legacy"
                             >
                                 ⚙️ Legacy Systems
@@ -1653,6 +1659,170 @@ The system will replace all placeholders with the actual content, maintaining pe
                     </div>
                 </div>
 
+                <!-- JSON Generator Tab -->
+                <div id="json-generator" class="tab-content">
+                    <div class="mb-8">
+                        <div class="prompt-line mb-4">
+                            <span>cat json_generator_prompt.txt</span>
+                        </div>
+                        <div class="pl-4 section-divider">
+                            <p class="highlight-text mb-3 inline-block">
+                                [JSON GENERATOR PROMPT]
+                            </p>
+                            <div class="space-y-2 text-sm mb-6">
+                                <p>→ Convert Natural Learning Flow output to structured JSON</p>
+                                <p>→ Includes proper HTML formatting and syntax highlighting</p>
+                                <p>→ Generates metadata with tags, difficulty, and descriptions</p>
+                                <p>→ Ready for learning guide website integration</p>
+                                <p>
+                                    → <span class="highlight-text">Perfect for building learning guide databases</span>
+                                </p>
+                                <p>→ Handles all 8 sections with proper mapping</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="text-center mb-8">
+                        <button
+                            id="copyJsonBtn"
+                            class="copy-btn font-mono font-bold py-3 px-8 text-lg"
+                            onclick="copyJsonPrompt()"
+                        >
+                            [COPY_JSON_GENERATOR]
+                        </button>
+                        <div
+                            id="jsonSuccessMsg"
+                            class="copy-success hidden text-center font-mono mt-3"
+                        >
+                            [SUCCESS] JSON Generator Prompt copied to clipboard.
+                        </div>
+                    </div>
+
+                    <div
+                        class="bg-black border border-gray-700 text-xs overflow-hidden"
+                    >
+                        <div
+                            class="border-b border-gray-700 px-3 py-1 text-gray-400"
+                        >
+                            json_generator_prompt.txt - 3847 bytes (latest)
+                        </div>
+                        <pre
+                            id="jsonPromptContent"
+                            class="p-4 overflow-x-auto text-white leading-relaxed"
+                        ># Learning Guide JSON Generation Prompt
+
+You are tasked with converting a natural learning system output into a structured JSON format for a learning guide website. 
+
+## Input Format
+You will receive learning content that follows this 8-section structure:
+1. **THE HOOK** - Introduction and motivation
+2. **HOW IT WORKS** - Core mechanics and principles  
+3. **REAL EXAMPLES** - Practical examples and use cases
+4. **DO THIS NOW** - Hands-on practice exercises
+5. **AVOID THESE** - Common pitfalls and warnings
+6. **CONNECTIONS** - Related concepts and prerequisites
+7. **TEST YOURSELF** - Self-assessment questions
+8. **LEVEL UP** - Growth path and next steps
+
+## Required Output Format
+Generate a JSON object with the following structure:
+
+```json
+{
+  "topic": "EXTRACTED_TOPIC_NAME",
+  "slug": "extracted-topic-name",
+  "sections": {
+    "hook": "HTML_FORMATTED_CONTENT",
+    "mechanics": "HTML_FORMATTED_CONTENT", 
+    "examples": "HTML_FORMATTED_CONTENT",
+    "practice": "HTML_FORMATTED_CONTENT",
+    "warnings": "HTML_FORMATTED_CONTENT",
+    "connections": "HTML_FORMATTED_CONTENT",
+    "test": "HTML_FORMATTED_CONTENT",
+    "growth": "HTML_FORMATTED_CONTENT"
+  },
+  "metadata": {
+    "name": "TOPIC_NAME",
+    "path": "./TOPIC_NAME - Learning Guide/",
+    "description": "CONCISE_DESCRIPTION_MAX_100_CHARS",
+    "tags": ["tag1", "tag2", "tag3", "tag4", "tag5"],
+    "difficulty": "beginner|intermediate|advanced",
+    "lastUpdated": "YYYY-MM-DD"
+  }
+}
+```
+
+## Content Processing Instructions
+
+### 1. Topic Extraction
+- Extract the main topic name from the content
+- Create a slug by converting to lowercase and replacing spaces with hyphens
+- Example: "Struct Padding & Alignment" → "struct-padding-alignment"
+
+### 2. Section Content Processing
+For each section, convert the content to proper HTML formatting:
+
+- **Paragraphs**: Wrap in `&lt;p&gt;` tags
+- **Lists**: Use `&lt;ul&gt;` and `&lt;li&gt;` for bullet points, `&lt;ol&gt;` and `&lt;li&gt;` for numbered lists
+- **Code blocks**: Wrap in `&lt;div class="code-block"&gt;&lt;pre&gt;CODE_HERE&lt;/pre&gt;&lt;/div&gt;`
+- **Inline code**: Wrap in `&lt;code&gt;` tags
+- **Bold text**: Wrap in `&lt;strong&gt;` tags
+- **Emphasis**: Wrap in `&lt;em&gt;` tags
+- **Headings**: Use `&lt;h3&gt;` for subsection headings within content
+
+### 3. Code Syntax Highlighting
+When processing code blocks, add appropriate CSS classes:
+- Keywords: `&lt;span class="keyword"&gt;keyword&lt;/span&gt;`
+- Types: `&lt;span class="type"&gt;type&lt;/span&gt;`
+- Variables: `&lt;span class="variable"&gt;variable&lt;/span&gt;`
+- Functions: `&lt;span class="function"&gt;function&lt;/span&gt;`
+- Comments: `&lt;span class="comment"&gt;// comment&lt;/span&gt;`
+- Strings: `&lt;span class="string"&gt;"string"&lt;/span&gt;`
+- Numbers: `&lt;span class="number"&gt;123&lt;/span&gt;`
+- Preprocessor: `&lt;span class="preprocessor"&gt;#include&lt;/span&gt;`
+
+### 4. Metadata Generation
+- **name**: Use the exact topic name
+- **path**: Format as `"./TOPIC_NAME - Learning Guide/"`
+- **description**: Create a concise description under 100 characters that captures the essence
+- **tags**: Generate 3-5 relevant tags based on the content (programming languages, concepts, domains)
+- **difficulty**: Assess as beginner/intermediate/advanced based on prerequisites and complexity
+- **lastUpdated**: Use today's date in YYYY-MM-DD format
+
+### 5. Special Formatting Rules
+- Escape any quotes within HTML content using `\"`
+- Preserve line breaks within code blocks
+- Remove any markdown formatting and convert to HTML
+- Ensure all HTML is properly closed and valid
+
+## Example Mapping
+If the input contains:
+```
+THE HOOK
+What is this?
+Struct padding and alignment are rules...
+
+Why care?
+They directly affect memory usage...
+```
+
+Convert to:
+```json
+"hook": "&lt;p&gt;&lt;strong&gt;What is this?&lt;/strong&gt;&lt;br&gt;Struct padding and alignment are rules...&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Why care?&lt;/strong&gt;&lt;br&gt;They directly affect &lt;strong&gt;memory usage, performance, and binary compatibility&lt;/strong&gt;...&lt;/p&gt;"
+```
+
+## Quality Requirements
+- All JSON must be valid and properly formatted
+- HTML content must be properly escaped and valid
+- Tags should be relevant and useful for categorization
+- Description should be engaging and informative
+- Difficulty assessment should be realistic based on prerequisites mentioned
+
+Generate only the JSON output, no additional text or explanation.</pre>
+                        </div>
+                    </div>
+                </div>
+
                 <!-- Legacy Systems Tab -->
                 <div id="legacy" class="tab-content">
                     <div class="mb-8">
@@ -1911,6 +2081,22 @@ Legacy systems remain available for specialized needs.</pre>
                             "copyLegacyBtn",
                             "legacySuccessMsg",
                             "[COPY_LEGACY_SYSTEMS]",
+                        );
+                    })
+                    .catch(handleCopyError);
+            }
+
+            function copyJsonPrompt() {
+                const jsonText = document.getElementById(
+                    "jsonPromptContent",
+                ).textContent;
+                navigator.clipboard
+                    .writeText(jsonText)
+                    .then(() => {
+                        showCopySuccess(
+                            "copyJsonBtn",
+                            "jsonSuccessMsg",
+                            "[COPY_JSON_GENERATOR]",
                         );
                     })
                     .catch(handleCopyError);
